@@ -1,0 +1,10 @@
+# .gitignore
+*.pyc
+*.log
+*.swp
+*.DS_Store
+*.cache
+*.netrwhist
+vim/bundle
+vim/sessions
+tags
