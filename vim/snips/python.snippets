@@ -1,0 +1,43 @@
+priority -50
+
+# shebang
+snippet #!
+#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+endsnippet
+
+# boilerplate
+snippet ifmain
+if __name__ == '__main__':
+
+    main()
+endsnippet
+
+# Date - ISO 8601 - (YYYY-MM-DD)
+snippet date
+def date():
+
+    ''' Date - ISO 8601 - (YYY-MM-DD) '''
+
+	d = datetime.datetime.now()
+
+	date = '{year}-{month}-{day}'.format(year=d.year, month=d.month, day=d.day)
+
+	return date
+
+endsnippet
+
+# Shell - subprocess
+snippet sub
+def r(command):
+
+    ''' Call shell commands '''
+
+	try:
+	    subprocess.call(command, shell=True)
+	except Exception as e:
+	    print(e)
+
+endsnippet
