@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# ~/dotfiles/library/terraform/setup.sh
 
 scriptname=$(basename "$0")
 scriptbuildnum="1.5.2"
