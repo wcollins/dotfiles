@@ -1,6 +1,4 @@
 #! /usr/bin/env bash
-# ~/dotfiles/library/hugo/setup.sh
-set -o pipefail
 
 DEFAULT_BIN_DIR="/usr/local/bin" 
 

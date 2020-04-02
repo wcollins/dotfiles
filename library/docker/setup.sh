@@ -1,6 +1,4 @@
 #! /usr/bin/env bash
-# ~/dotfiles/library/docker/setup.sh
-set -o pipefail
 
 function install_depend() {
 
