@@ -13,4 +13,4 @@ wget $(curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest | grep
 sudo dpkg -i hugo_extended*Linux-64bit.deb
 
 # Clean
-sudo rm -rf ~/temp
+sudo rm -rf $temp
