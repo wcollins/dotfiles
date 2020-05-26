@@ -40,6 +40,7 @@ alias gc='git commit -m'
 alias gp='git pull origin master'
 alias fgp='git fetch --all && git reset --hard origin/master'
 alias gpm='git push -u origin master'
+alias gsu='git submodule update --init --recursive"
 
 # docker
 alias compose='docker-compose up -d'

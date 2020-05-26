@@ -1,6 +1,4 @@
 #! /usr/bin/env bash
-# ~/dotfiles/library/hugo/setup.sh
-set -o pipefail
 
 # Vars
 temp=~/hugo_dir

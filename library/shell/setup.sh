@@ -1,6 +1,4 @@
 #! /usr/bin/env bash
-# ~/dotfiles/library/shell/setup.sh
-set -o pipefail
 
 function install_depend() {
 
