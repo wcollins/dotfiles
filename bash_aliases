@@ -40,22 +40,4 @@ alias gc='git commit -m'
 alias gp='git pull origin master'
 alias fgp='git fetch --all && git reset --hard origin/master'
 alias gpm='git push -u origin master'
-alias gsu='git submodule update --init --recursive"
-
-# docker
-alias compose='docker-compose up -d'
-
-# kvm
-alias virsh='virsh --connect qemu:///system'
-
-# colors
-if [ -x /usr/bin/dircolors ]
-then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
+alias gsu='git submodule update --init --recursive'
