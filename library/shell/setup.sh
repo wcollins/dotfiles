@@ -81,20 +81,6 @@ function git_setup() {
 
 }
 
-function python_setup() {
-
-    # +-------------------+
-    # | Logical defaults  |
-    # +-------------------+
-
-    # Set python3 to default
-    sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 && sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 2
-
-    # Upgrade pip
-    sudo pip install --upgrade pip
-
-}
-
 function vundle_setup() {
 
     # +--------------------+
@@ -121,7 +107,6 @@ function main() {
   backup_defaults
   link_dotfiles
   vundle_setup
-  python_setup
   git_setup
 
 }
