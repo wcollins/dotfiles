@@ -81,6 +81,21 @@ function git_setup() {
 
 }
 
+function python_setup() {
+
+    # +------------------------+
+    # | Setup user python env  |
+    # +------------------------+
+
+    # upgrade pip globally
+    sudo pip3 install --upgrade pip
+
+    # install user pipenv
+    pip install --user pipenv
+
+
+}
+
 function vundle_setup() {
 
     # +--------------------+
@@ -108,6 +123,7 @@ function main() {
   link_dotfiles
   vundle_setup
   git_setup
+  python_setup
 
 }
 
