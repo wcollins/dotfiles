@@ -82,10 +82,10 @@ if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions
 fi
 
-# Source private bin
-if [ -d "$HOME/bin" ]
+# Source local bin
+if [ -d "$HOME/.local/bin" ]
 then
-    PATH="$HOME/bin:$PATH"
+    PATH="$HOME/.local/bin:$PATH"
 fi
 
 # Source GOLANG path
