@@ -73,6 +73,7 @@ function git_setup() {
         # Create .gitconfig
         git config --global user.name "$git_user"
         git config --global user.email "$git_email"
+        git config --global pull.ff only
 
     else
         echo "~/.gitconfig already exists. Exiting"
