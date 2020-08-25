@@ -1,7 +1,9 @@
 # ~/.bash_aliases
 
 # system
-alias ll='ls -al'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 alias mkdir='mkdir -pv'
 alias wget='wget -c'
 alias reboot='sudo /sbin/reboot'
