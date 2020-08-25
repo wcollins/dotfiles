@@ -19,6 +19,9 @@ HISTFILESIZE=2000
 # Check window size
 shopt -s checkwinsize
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
 # Set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
@@ -30,7 +33,7 @@ case "$TERM" in
 esac
 
 # Color prompt if available
-force_color_prompt=yes
+# force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -64,13 +67,13 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
-    #alias grep='grep --color=auto'
-    #alias fgrep='fgrep --color=auto'
-    #alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
 
 # Colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+# export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Source aliases
 if [ -f ~/.bash_aliases ]; then
@@ -80,23 +83,6 @@ fi
 # Source functions
 if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions
-fi
-
-# Source local bin
-if [ -d "$HOME/.local/bin" ]
-then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-# Source GOLANG path
-if [ -d "$HOME/go" ]
-then
-    GOPATH=$HOME/go
-fi
-
-# Note: Bash on Windows does not currently apply umask properly
-if [ "$(umask)" = "0000" ]; then
-    umask 0022
 fi
 
 # Enable programmable completion features
