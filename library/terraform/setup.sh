@@ -1,10 +1,12 @@
-#!/usr/bin/env bash
+#! /usr/bin/env bash
+
+set -e
 
 scriptname=$(basename "$0")
-scriptbuildnum="1.5.2"
-scriptbuilddate="2020-01-02"
+scriptbuildnum="1.5.4"
+scriptbuilddate="2020-06-25"
 
-# Check dependencies
+# CHECK DEPENDANCIES AND SET NET RETRIEVAL TOOL
 if ! unzip -h 2&> /dev/null; then
   echo "aborting - unzip not installed and required"
   exit 1
@@ -38,19 +40,16 @@ usage() {
 }
 
 getLatest() {
-
-  # Get latest version
+  # USE NET RETRIEVAL TOOL TO GET LATEST VERSION
   case "${nettool}" in
-
-    # Parse with jq
+    # jq installed - parse version from hashicorp website
     wgetjq)
       LATEST_ARR=($(wget -q -O- https://releases.hashicorp.com/index.json 2>/dev/null | jq -r '.terraform.versions[].version' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
       ;;
     curljq)
       LATEST_ARR=($(curl -s https://releases.hashicorp.com/index.json 2>/dev/null | jq -r '.terraform.versions[].version' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
       ;;
-
-    # Parse with Github API
+    # parse version from github API
     wget)
       LATEST_ARR=($(wget -q -O- https://api.github.com/repos/hashicorp/terraform/releases 2> /dev/null | awk '/tag_name/ {print $2}' | cut -d '"' -f 2 | cut -d 'v' -f 2))
       ;;
@@ -59,7 +58,7 @@ getLatest() {
       ;;
   esac
 
-# Validate latest version isn't beta or rc
+# make sure latest version isn't beta or rc
 for ver in "${LATEST_ARR[@]}"; do
   if [[ ! $ver =~ beta ]] && [[ ! $ver =~ rc ]] && [[ ! $ver =~ alpha ]]; then
     LATEST="$ver"
@@ -82,13 +81,13 @@ while getopts ":i:achv" arg; do
 done
 shift $((OPTIND-1))
 
-# Populate variables into download URL
+# POPULATE VARIABLES NEEDED TO CREATE DOWNLOAD URL AND FILENAME
 if [[ -z "$VERSION" ]]; then
   VERSION=$(getLatest)
 fi
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 if [[ "$OS" == "linux" ]]; then
-  PROC=$(lscpu 2> /dev/null | awk '/Architecture/ {if($2 == "x86_64") {print "amd64"; exit} else if($2 ~ /arm/) {print "arm"; exit} else {print "386"; exit}}')
+  PROC=$(lscpu 2> /dev/null | awk '/Architecture/ {if($2 == "x86_64") {print "amd64"; exit} else if($2 ~ /arm/) {print "arm"; exit} else if($2 ~ /aarch64/) {print "arm"; exit} else {print "386"; exit}}')
   if [[ -z $PROC ]]; then
     PROC=$(cat /proc/cpuinfo | awk '/model\ name/ {if($0 ~ /ARM/) {print "arm"; exit}}')
   fi
@@ -100,12 +99,12 @@ else
 fi
 [[ $PROC =~ arm ]] && PROC="arm"  # terraform downloads use "arm" not full arm type
 
-# Build URL and Filename
+# CREATE FILENAME AND URL FROM GATHERED PARAMETERS
 FILENAME="terraform_${VERSION}_${OS}_${PROC}.zip"
 LINK="https://releases.hashicorp.com/terraform/${VERSION}/${FILENAME}"
 SHALINK="https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_SHA256SUMS"
 
-# Test calculated links
+# TEST CALCULATED LINKS
 case "${nettool}" in
   wget*)
     LINKVALID=$(wget --spider -S "$LINK" 2>&1 | grep "HTTP/" | awk '{print $2}')
@@ -117,7 +116,7 @@ case "${nettool}" in
     ;;
 esac
 
-# Verify link validity
+# VERIFY LINK VALIDITY
 if [[ "$LINKVALID" != 200 ]]; then
   echo -e "Cannot Install - Download URL Invalid"
   echo -e "\nParameters:"
@@ -128,48 +127,42 @@ if [[ "$LINKVALID" != 200 ]]; then
   exit 1
 fi
 
-# Verify SHA link validity
+# VERIFY SHA LINK VALIDITY
 if [[ "$SHALINKVALID" != 200 ]]; then
   echo -e "Cannot Install - URL for Checksum File Invalid"
   echo -e "\tURL:\t$SHALINK"
   exit 1
 fi
 
-# Determine destination
+# DETERMINE DESTINATION
 if [[ "$cwdInstall" ]]; then
   BINDIR=$(pwd)
-
 elif [[ -w "/usr/local/bin" ]]; then
   BINDIR="/usr/local/bin"
   CMDPREFIX=""
   STREAMLINED=true
-
 elif [[ "$sudoInstall" ]]; then
   BINDIR="/usr/local/bin"
   CMDPREFIX="sudo "
   STREAMLINED=true
-
 else
   echo -e "Terraform Installer\n"
   echo "Specify install directory (a,b or c):"
   echo -en "\t(a) '~/bin'    (b) '/usr/local/bin' as root    (c) abort : "
   read -r -n 1 SELECTION
   echo
-
   if [ "${SELECTION}" == "a" ] || [ "${SELECTION}" == "A" ]; then
     BINDIR="${HOME}/bin"
     CMDPREFIX=""
-
   elif [ "${SELECTION}" == "b" ] || [ "${SELECTION}" == "B" ]; then
     BINDIR="/usr/local/bin"
     CMDPREFIX="sudo "
-
   else
     exit 0
   fi
 fi
 
-# Create temp dir for extraction
+# CREATE TMPDIR FOR EXTRACTION
 if [[ ! "$cwdInstall" ]]; then
   TMPDIR=${TMPDIR:-/tmp}
   UTILTMPDIR="terraform_${VERSION}"
@@ -179,7 +172,7 @@ if [[ ! "$cwdInstall" ]]; then
   cd "$UTILTMPDIR" || exit 1
 fi
 
-# Download files
+# DOWNLOAD ZIP AND CHECKSUM FILES
 case "${nettool}" in
   wget*)
     wget -q "$LINK" -O "$FILENAME"
@@ -191,7 +184,7 @@ case "${nettool}" in
     ;;
 esac
 
-# Verify ZIP checksum
+# VERIFY ZIP CHECKSUM
 if shasum -h 2&> /dev/null; then
   expected_sha=$(cat SHAFILE | grep "$FILENAME" | awk '{print $1}')
   download_sha=$(shasum -a 256 "$FILENAME" | cut -d' ' -f1)
@@ -203,15 +196,14 @@ if shasum -h 2&> /dev/null; then
   fi
 fi
 
-# Extract ZIP
+# EXTRACT ZIP
 unzip -qq "$FILENAME" || exit 1
 
-# Copy to destination
+# COPY TO DESTINATION
 if [[ ! "$cwdInstall" ]]; then
   mkdir -p "${BINDIR}" || exit 1
-  ${CMDPREFIX} cp -f terraform "$BINDIR" || exit 1
-
-  # Cleanup and exit
+  ${CMDPREFIX} mv terraform "$BINDIR" || exit 1
+  # CLEANUP AND EXIT
   cd "${TMPDIR}" || exit 1
   rm -rf "${UTILTMPDIR}"
   [[ ! "$STREAMLINED" ]] && echo
