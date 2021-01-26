@@ -22,6 +22,9 @@ function usage() {
         --hugo
             Install Hugo static site generator.
 
+        --packer
+            Install latest version of Packer locally at ~/bin.
+
         --shell
             Configure default shell environment for Debian or derivatives of Debian.
 
@@ -37,6 +40,7 @@ case $1 in
     --docker) ./library/docker/setup.sh;;
     --hugo) ./library/hugo/setup.sh;;
     --shell) ./library/shell/setup.sh;;
+    --packer) ./library/packer/setup.sh;;
     --terraform) ./library/terraform/setup.sh;;
     --usage) usage;;
     --help) usage;;
