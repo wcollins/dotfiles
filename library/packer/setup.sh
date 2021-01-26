@@ -1,8 +1,8 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -e
 
 scriptname=$(basename "$0")
-scriptbuildnum="1.5.4"
+scriptbuildnum="1.5.3"
 scriptbuilddate="2020-06-25"
 
 # CHECK DEPENDANCIES AND SET NET RETRIEVAL TOOL
@@ -29,9 +29,9 @@ displayVer() {
 }
 
 usage() {
-  [[ "$1" ]] && echo -e "Download and Install Terraform - Latest Version unless '-i' specified\n"
+  [[ "$1" ]] && echo -e "Download and Install Packer - Latest Version unless '-i' specified\n"
   echo -e "usage: ${scriptname} [-i VERSION] [-a] [-c] [-h] [-v]"
-  echo -e "     -i VERSION\t: specify version to install in format '0.11.8' (OPTIONAL)"
+  echo -e "     -i VERSION\t: specify version to install in format '$LATEST' (OPTIONAL)"
   echo -e "     -a\t\t: automatically use sudo to install to /usr/local/bin"
   echo -e "     -c\t\t: leave binary in working directory (for CI/DevOps use)"
   echo -e "     -h\t\t: help"
@@ -43,28 +43,28 @@ getLatest() {
   case "${nettool}" in
     # jq installed - parse version from hashicorp website
     wgetjq)
-      LATEST_ARR=($(wget -q -O- https://releases.hashicorp.com/index.json 2>/dev/null | jq -r '.terraform.versions[].version' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
+      LATEST_ARR=($(wget -q -O- https://releases.hashicorp.com/index.json 2>/dev/null | jq -r '.packer.versions[].version' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
       ;;
     curljq)
-      LATEST_ARR=($(curl -s https://releases.hashicorp.com/index.json 2>/dev/null | jq -r '.terraform.versions[].version' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
+      LATEST_ARR=($(curl -s https://releases.hashicorp.com/index.json 2>/dev/null | jq -r '.packer.versions[].version' | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
       ;;
-    # parse version from github API
+    # parse version from github API - use Tags for Packer as release not populated
     wget)
-      LATEST_ARR=($(wget -q -O- https://api.github.com/repos/hashicorp/terraform/releases 2> /dev/null | awk '/tag_name/ {print $2}' | cut -d '"' -f 2 | cut -d 'v' -f 2))
+      LATEST_ARR=($(wget -q -O- https://api.github.com/repos/hashicorp/packer/tags 2>/dev/null | grep name | awk '{print $2}' | cut -d '"' -f 2 | cut -d 'v' -f 2 | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
       ;;
     curl)
-      LATEST_ARR=($(curl -s https://api.github.com/repos/hashicorp/terraform/releases 2> /dev/null | awk '/tag_name/ {print $2}' | cut -d '"' -f 2 | cut -d 'v' -f 2))
+      LATEST_ARR=($(curl -s https://api.github.com/repos/hashicorp/packer/tags 2>/dev/null | grep name | awk '{print $2}' | cut -d '"' -f 2 | cut -d 'v' -f 2 | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr))
       ;;
   esac
 
-# make sure latest version isn't beta or rc
-for ver in "${LATEST_ARR[@]}"; do
-  if [[ ! $ver =~ beta ]] && [[ ! $ver =~ rc ]] && [[ ! $ver =~ alpha ]]; then
-    LATEST="$ver"
-    break
-  fi
-done
-echo -n "$LATEST"
+  # make sure latest version isn't beta or rc
+  for ver in "${LATEST_ARR[@]}"; do
+    if [[ ! $ver =~ beta ]] && [[ ! $ver =~ rc ]] && [[ ! $ver =~ alpha ]]; then
+      LATEST="$ver"
+      break
+    fi
+  done
+  echo -n "$LATEST"
 }
 
 while getopts ":i:achv" arg; do
@@ -86,22 +86,19 @@ if [[ -z "$VERSION" ]]; then
 fi
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 if [[ "$OS" == "linux" ]]; then
-  PROC=$(lscpu 2> /dev/null | awk '/Architecture/ {if($2 == "x86_64") {print "amd64"; exit} else if($2 ~ /arm/) {print "arm"; exit} else if($2 ~ /aarch64/) {print "arm"; exit} else {print "386"; exit}}')
-  if [[ -z $PROC ]]; then
-    PROC=$(cat /proc/cpuinfo | awk '/model\ name/ {if($0 ~ /ARM/) {print "arm"; exit}}')
-  fi
+  PROC=$(lscpu 2> /dev/null | awk '/Architecture/ {if($2 == "x86_64") {print "amd64"; exit} else if($2 ~ /arm/) {print "arm"; exit} else if($2 ~ /aarch64/) {print "arm64"; exit} else {print "386"; exit}}')
   if [[ -z $PROC ]]; then
     PROC=$(cat /proc/cpuinfo | awk '/flags/ {if($0 ~ /lm/) {print "amd64"; exit} else {print "386"; exit}}')
   fi
 else
   PROC="amd64"
 fi
-[[ $PROC =~ arm ]] && PROC="arm"  # terraform downloads use "arm" not full arm type
+[[ $PROC =~ arm ]] && PROC="arm"  # Packer downloads use "arm" not full arm type
 
 # CREATE FILENAME AND URL FROM GATHERED PARAMETERS
-FILENAME="terraform_${VERSION}_${OS}_${PROC}.zip"
-LINK="https://releases.hashicorp.com/terraform/${VERSION}/${FILENAME}"
-SHALINK="https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_SHA256SUMS"
+FILENAME="packer_${VERSION}_${OS}_${PROC}.zip"
+LINK="https://releases.hashicorp.com/packer/${VERSION}/${FILENAME}"
+SHALINK="https://releases.hashicorp.com/packer/${VERSION}/packer_${VERSION}_SHA256SUMS"
 
 # TEST CALCULATED LINKS
 case "${nettool}" in
@@ -145,7 +142,7 @@ elif [[ "$sudoInstall" ]]; then
   CMDPREFIX="sudo "
   STREAMLINED=true
 else
-  echo -e "Terraform Installer\n"
+  echo -e "Packer Installer\n"
   echo "Specify install directory (a,b or c):"
   echo -en "\t(a) '~/bin'    (b) '/usr/local/bin' as root    (c) abort : "
   read -r -n 1 SELECTION
@@ -164,7 +161,7 @@ fi
 # CREATE TMPDIR FOR EXTRACTION
 if [[ ! "$cwdInstall" ]]; then
   TMPDIR=${TMPDIR:-/tmp}
-  UTILTMPDIR="terraform_${VERSION}"
+  UTILTMPDIR="packer_${VERSION}"
 
   cd "$TMPDIR" || exit 1
   mkdir -p "$UTILTMPDIR"
@@ -198,17 +195,18 @@ fi
 # EXTRACT ZIP
 unzip -qq "$FILENAME" || exit 1
 
-# COPY TO DESTINATION
 if [[ ! "$cwdInstall" ]]; then
+  # COPY TO DESTINATION
   mkdir -p "${BINDIR}" || exit 1
-  ${CMDPREFIX} mv terraform "$BINDIR" || exit 1
+  ${CMDPREFIX} mv packer "$BINDIR" || exit 1
+
   # CLEANUP AND EXIT
   cd "${TMPDIR}" || exit 1
   rm -rf "${UTILTMPDIR}"
   [[ ! "$STREAMLINED" ]] && echo
-  echo "Terraform Version ${VERSION} installed to ${BINDIR}"
+  echo "Packer Version ${VERSION} installed to ${BINDIR}"
 else
-  echo "Terraform Version ${VERSION} downloaded"
+  echo "Packer Version ${VERSION} downloaded"
 fi
 
 exit 0
