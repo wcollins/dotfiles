@@ -1,0 +1,27 @@
+[global_config]
+  window_state = maximise
+  sticky = True
+  title_transmit_fg_color = "#000000"
+  title_transmit_bg_color = "#000000"
+  title_receive_fg_color = "#000000"
+  title_receive_bg_color = "#000000"
+  title_inactive_bg_color = "#000000"
+[keybindings]
+[profiles]
+  [[default]]
+    icon_bell = False
+    cursor_shape = ibeam
+    cursor_color = "#aaaaaa"
+    font = SauceCodePro Nerd Font Medium 14
+    foreground_color = "#ffffff"
+    show_titlebar = False
+    use_system_font = False
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+[plugins]
