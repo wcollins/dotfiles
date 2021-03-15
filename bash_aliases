@@ -34,12 +34,4 @@ alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
 alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
 
 # git
-alias gi='git init'
-alias gs='git status'
-alias ga='git add'
-alias gr='git rm'
-alias gc='git commit -m'
-alias gp='git pull origin master'
-alias fgp='git fetch --all && git reset --hard origin/master'
-alias gpm='git push -u origin master'
 alias gsu='git submodule update --init --recursive'
