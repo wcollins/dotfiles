@@ -80,3 +80,22 @@ function update() {
     done
 
 }
+
+function clean() {
+
+    # +---------------------------+
+    # | Clean TF directory        |
+    # +---------------------------+
+
+    file_list=".terraform.lock.hcl terraform.tfstate terraform.tfstate.backup tfplan"
+
+    rm -rf .terraform
+
+    for file in $file_list
+    do
+        if [ -f $file ]
+        then
+            rm -rf $file
+        fi
+    done
+}
