@@ -1,4 +1,4 @@
-" ~/.vimrc
+" ~/.vimrc, linux
 
 " settings dir
 let s:vimDir = '~/.vim/settings/'
