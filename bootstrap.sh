@@ -22,6 +22,9 @@ function usage() {
         --hugo
             Install Hugo static site generator.
 
+        --mac
+            Setup macos packages.
+
         --packer
             Install latest version of Packer locally at ~/bin.
 
@@ -42,6 +45,7 @@ case $1 in
     --shell) ./library/shell/setup.sh;;
     --packer) ./library/packer/setup.sh;;
     --terraform) ./library/terraform/setup.sh;;
+    --mac) ./library/macos/setup.sh;;
     --usage) usage;;
     --help) usage;;
     *) usage; exit 1;;
