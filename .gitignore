@@ -1,0 +1,267 @@
+# dotfiles .gitignore
+
+# os generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# editor and ide files
+*~
+*.swp
+*.swo
+*.tmp
+.viminfo
+.netrwhist
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# logs and runtime data
+*.log
+*.pid
+*.seed
+*.pid.lock
+pids/
+
+# temp files
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+.cache/
+.npm/
+.yarn/
+
+# backups
+*.bak
+*.backup
+*.orig
+*.save
+*~
+
+# archive files
+*.7z
+*.rar
+*.zip
+*.gz
+*.tgz
+*.tar
+
+# system and shell generated
+.bash_history
+.zsh_history
+.viminfo
+.lesshst
+.sqlite_history
+
+# secret and configuration files
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+.env
+.env.*
+!.env.example
+config/secrets/
+secrets/
+private/
+
+# language-specific ignores
+# node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+venv/
+env/
+.venv/
+.env
+
+# ruby
+*.gem
+.bundle/
+vendor/bundle/
+.rvm/
+
+# go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+go.work
+
+# rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# java
+*.class
+*.jar
+*.war
+*.ear
+
+# c/c++
+*.o
+*.a
+*.so
+*.obj
+*.exe
+*.out
+*.app
+
+# neovim/vim specific, this repo!
+.netrwhist
+*.swp
+*.swo
+*~
+Session.vim
+
+# local customizations
+local/
+*.local
+*_local
+config/local/
+
+# homebrew bundle (macos)
+Brewfile.lock.json
+
+# gnu stow backup files
+*-stow-bak*
+
+# dotfiles-specific ignores
+.dotfiles-backup-*/
+backups/
+
+# local test configurations
+test-*/
+*.test
+
+# any local overrides or machine-specific configs
+hostname-*/
+host-*/
+machine-*/
+local-*/
+
+# installation logs
+install.log
+setup.log
+
+# package manager locks
+Brewfile.lock.json
+package-lock.json
+yarn.lock
+Pipfile.lock
+
+# build artifacts
+build/
+dist/
+out/
+
+# documentation build artifacts
+docs/_build/
+site/
+
+# local development databases
+*.sqlite
+*.db
+
+# jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+tfplan
+crash.log
+
+# docker
+.dockerignore
+
+# ssh keys and configs (machine-specific)
+config/ssh/known_hosts
+config/ssh/id_*
+config/ssh/*.pem
+config/ssh/*.key
+
+# gpg keys
+*.gpg
+*.asc
+
+# local shell history and state
+.bash_sessions/
+.zcompdump*
+.zsh_sessions/
+
+# macos finder
+.fseventsd/
+.DocumentRevisions-V100/
+.TemporaryItems/
+
+# windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# linux
+.directory
+.Trash-*/
+
+# application-specific
+.vscode-server/
+.ansible/
+.docker/config.json
+.kube/cache/
+.npm/_logs/
+.yarn/cache/
+
+# any machine-specific customizations
+*-$(hostname)
+*-$(whoami)
+*.$(hostname)
