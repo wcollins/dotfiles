@@ -1,0 +1,52 @@
+#!/bin/bash
+# Linux-specific shell configuration
+# This file is sourced by ~/.config/shell/profile on Linux systems
+
+# ls colors (GNU coreutils)
+if command -v dircolors >/dev/null 2>&1; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+fi
+
+alias ll='ls -alF --color=auto'
+alias la='ls -A --color=auto'
+alias l='ls -CF --color=auto'
+
+# grep colors
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# package manager aliases for Debian/Ubuntu
+if command -v apt >/dev/null 2>&1; then
+    alias apt-update='sudo apt update'
+    alias apt-upgrade='sudo apt update && sudo apt upgrade'
+    alias apt-search='apt search'
+    alias apt-install='sudo apt install'
+    alias apt-remove='sudo apt remove'
+    alias apt-clean='sudo apt autoremove && sudo apt autoclean'
+fi
+
+# systemd shortcuts
+if command -v systemctl >/dev/null 2>&1; then
+    alias sc='systemctl'
+    alias scs='systemctl status'
+    alias scr='sudo systemctl restart'
+    alias scu='systemctl --user'
+    alias journal='journalctl -xe'
+fi
+
+# open command (xdg-open for Linux)
+if command -v xdg-open >/dev/null 2>&1; then
+    alias open='xdg-open'
+fi
+
+# clipboard aliases (if xclip is installed)
+if command -v xclip >/dev/null 2>&1; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+fi
+
+# network tools
+alias ports='sudo netstat -tulpn'
+alias listening='sudo lsof -i -P -n | grep LISTEN'

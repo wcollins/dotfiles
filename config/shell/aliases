@@ -1,0 +1,58 @@
+# ~/.config/shell/aliases
+# system aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias mkdir='mkdir -pv'
+alias wget='wget -c'
+alias reboot='sudo /sbin/reboot'
+alias poweroff='sudo /sbin/poweroff'
+alias halt='sudo /sbin/halt'
+alias shutdown='sudo /sbin/shutdown'
+
+# resource monitoring
+alias df='df -Tha --total'
+alias du='du -ach | sort -h'
+alias free='free -mt'
+alias ps='ps auxf'
+alias psg='ps aux | grep -v grep | grep -i -e VSZ -e'
+alias meminfo='free -m -l -t'
+alias psmem='ps auxf | sort -nr -k 4'
+alias psmem10='ps auxf | sort -nr -k 4 | head -10'
+alias pscpu='ps auxf | sort -nr -k 3'
+alias pscpu10='ps auxf | sort -nr -k 3 | head -10'
+alias cpuinfo='lscpu'
+
+# networking
+alias ifconfig='/sbin/ifconfig'
+alias route='/sbin/route'
+alias ports='netstat -tulanp'
+alias iptlist='sudo /sbin/iptables -L -n -v --line-numbers'
+alias iptlistin='sudo /sbin/iptables -L INPUT -n -v --line-numbers'
+alias iptlistout='sudo /sbin/iptables -L OUTPUT -n -v --line-numbers'
+alias iptlistfw='sudo /sbin/iptables -L FORWARD -n -v --line-numbers'
+
+# git shortcuts
+alias gsu='git submodule update --init --recursive'
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline'
+
+# docker shortcuts
+alias dexec='docker exec -it'
+alias dps='docker ps'
+alias di='docker images'
+
+# modern tools
+alias find='fd 2>/dev/null || find'
+if command -v rg >/dev/null 2>&1; then
+    alias grep='rg'
+else
+    alias grep='grep --color=auto'
+fi
+alias vi='nvim'
+
+# claude
+alias claude-run="claude --dangerously-skip-permissions"

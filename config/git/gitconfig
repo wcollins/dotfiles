@@ -1,0 +1,61 @@
+[user]
+	name = Your Name
+	email = your.email@example.com
+
+[core]
+	editor = nvim
+	pager = less -FRSX
+	autocrlf = input
+	safecrlf = false
+	excludesfile = ~/.config/git/gitignore_global
+
+[push]
+	default = simple
+	autoSetupRemote = true
+
+[pull]
+	rebase = false
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	tool = vimdiff
+
+[color]
+	ui = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+
+[alias]
+	st = status
+	ci = commit
+	co = checkout
+	br = branch
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	tree = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	amend = commit --amend
+	uncommit = reset --soft HEAD~1
+	recommit = commit --amend --no-edit
+
+[init]
+	defaultBranch = main
+
+[credential]
+	helper = cache --timeout=3600
