@@ -1,0 +1,106 @@
+# global gitignore file
+
+# os generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# editor and ide files
+*~
+*.swp
+*.swo
+.viminfo
+.netrwhist
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# logs and databases
+*.log
+*.sql
+*.sqlite
+
+# runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# backup files
+*.bak
+*.backup
+
+# archive files
+*.7z
+*.jar
+*.rar
+*.zip
+*.gz
+*.tgz
+*.tar
+
+# dependencies
+node_modules/
+jspm_packages/
+bower_components/
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv
+pip-log.txt
+
+# go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# ruby
+*.gem
+.bundle/
+log/*.log
+tmp/
+
+# java
+*.class
+*.jar
+*.war
+*.ear
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+tfplan
+
+# docker
+.dockerignore
+
+# security
+*.pem
+*.key
+*.crt
+*.csr
