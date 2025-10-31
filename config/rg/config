@@ -1,0 +1,30 @@
+# Ripgrep configuration file
+# Location: ~/.config/rg/config
+
+# Search options
+--smart-case
+--follow
+--hidden
+
+# Ignore patterns
+--glob=!.git/*
+--glob=!node_modules/*
+--glob=!.cache/*
+--glob=!dist/*
+--glob=!build/*
+--glob=!target/*
+--glob=!__pycache__/*
+--glob=!*.pyc
+--glob=!.pytest_cache/*
+--glob=!.coverage
+--glob=!*.egg-info/*
+--glob=!.venv/*
+--glob=!venv/*
+--glob=!.DS_Store
+
+# Display options
+--colors=match:fg:red
+--colors=match:style:bold
+--colors=path:fg:green
+--colors=path:style:bold
+--colors=line:fg:yellow

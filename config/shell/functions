@@ -1,0 +1,94 @@
+# ~/.config/shell/functions
+
+extract() {
+
+    # extract common archive formats
+    if [ -z "$1" ]; then
+        echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+        return 1
+    fi
+
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2)   tar xvjf ./"$1"    ;;
+            *.tar.gz)    tar xvzf ./"$1"    ;;
+            *.tar.xz)    tar xvJf ./"$1"    ;;
+            *.lzma)      unlzma ./"$1"      ;;
+            *.bz2)       bunzip2 ./"$1"     ;;
+            *.rar)       unrar x -ad ./"$1" ;;
+            *.gz)        gunzip ./"$1"      ;;
+            *.tar)       tar xvf ./"$1"     ;;
+            *.tbz2)      tar xvjf ./"$1"    ;;
+            *.tgz)       tar xvzf ./"$1"    ;;
+            *.zip)       unzip ./"$1"       ;;
+            *.Z)         uncompress ./"$1"  ;;
+            *.7z)        7z x ./"$1"        ;;
+            *.xz)        unxz ./"$1"        ;;
+            *.exe)       cabextract ./"$1"  ;;
+            *)           echo "extract: '$1' - unknown archive method" ;;
+        esac
+    else
+        echo "'$1' - file does not exist"
+    fi
+}
+
+keygen() {
+
+    # generate public/private rsa key pair
+    read -p "Comment: " comment
+    read -p "Filename: " file_name
+    read -p "Bit length (2048/4096): " bit_length
+    
+    # default to 4096 if no input
+    bit_length=${bit_length:-4096}
+    
+    # create keys directory if it doesn't exist
+    mkdir -p "$HOME/.ssh/keys"
+    key_path="$HOME/.ssh/keys/$file_name"
+
+    # generate key pair
+    ssh-keygen \
+        -t rsa \
+        -C "$comment" \
+        -f "$key_path" \
+        -b "$bit_length"
+
+    echo "Key pair generated at: $key_path"
+    echo "Public key:"
+    cat "${key_path}.pub"
+}
+
+update() {
+
+    # install updates for debian/ubuntu
+    if command -v apt-get >/dev/null 2>&1; then
+        local cmd_list="update upgrade dist-upgrade autoremove autoclean"
+        for cmd in $cmd_list; do
+            echo "Running: sudo apt-get -y $cmd"
+            sudo apt-get -y $cmd
+        done
+    else
+        echo "apt-get not found. This function only supports Debian/Ubuntu systems."
+        return 1
+    fi
+}
+
+clean() {
+
+    # clean terraform directory
+    local file_list=".terraform.lock.hcl terraform.tfstate terraform.tfstate.backup tfplan"
+
+    if [ -d ".terraform" ]; then
+        echo "Removing .terraform directory..."
+        rm -rf .terraform
+    fi
+
+    for file in $file_list; do
+        if [ -f "$file" ]; then
+            echo "Removing $file..."
+            rm -rf "$file"
+        fi
+    done
+    
+    echo "Terraform directory cleaned."
+}

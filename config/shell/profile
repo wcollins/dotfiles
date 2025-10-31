@@ -1,0 +1,44 @@
+# ~/.config/shell/profile
+# bash shell profile for Debian/Ubuntu systems
+
+# source exports first
+if [ -f "$HOME/.config/shell/exports" ]; then
+    . "$HOME/.config/shell/exports"
+fi
+
+# source functions
+if [ -f "$HOME/.config/shell/functions" ]; then
+    . "$HOME/.config/shell/functions"
+fi
+
+# source aliases
+if [ -f "$HOME/.config/shell/aliases" ]; then
+    . "$HOME/.config/shell/aliases"
+fi
+
+# source prompt configuration
+if [ -f "$HOME/.config/shell/prompt" ]; then
+    . "$HOME/.config/shell/prompt"
+fi
+
+# platform-specific configurations
+case "$(uname -s)" in
+    Linux)
+        # linux specific
+        if [ -f "$HOME/.config/shell/linux" ]; then
+            . "$HOME/.config/shell/linux"
+        fi
+        ;;
+esac
+
+# load local configuration if it exists
+if [ -f "$HOME/.config/shell/local" ]; then
+    . "$HOME/.config/shell/local"
+fi
+
+# run fastfetch on SSH login (interactive sessions only)
+if [[ $- == *i* ]] && ([ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]); then
+    if command -v fastfetch >/dev/null 2>&1; then
+        fastfetch
+    fi
+fi
