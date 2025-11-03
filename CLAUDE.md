@@ -71,6 +71,7 @@ make uninstall              # Remove symlinks created by Stow
 ### Development Information
 ```bash
 make info                   # Show system info (OS, shell, git, nvim, stow versions)
+make dev-setup              # Setup development environment (alias for install)
 ```
 
 ## Directory Structure
@@ -79,6 +80,8 @@ make info                   # Show system info (OS, shell, git, nvim, stow versi
 dotfiles/
 ├── .claude/            # Global Claude Code preferences (symlinked to ~/.claude/)
 │   └── CLAUDE.md       # Universal coding style and preferences
+├── assets/             # Static assets
+│   └── wallpapers/     # Desktop wallpaper images
 ├── config/             # XDG-compliant configurations (stowed to ~/.config)
 │   ├── git/            # Git configuration templates
 │   ├── nvim/           # Neovim configuration
@@ -106,7 +109,7 @@ dotfiles/
 
 **Font Installation**: The installer downloads and installs Nerd Fonts (FiraCode, JetBrains Mono, Source Code Pro, Terminus, Consolas) to `~/.local/share/fonts` and refreshes the font cache.
 
-**Git Configuration**: `scripts/setup/git.sh` handles interactive git configuration including user name/email, editor, credential helpers, and optional GPG signing key generation.
+**Git Configuration**: `scripts/setup/git.sh` handles interactive git configuration including user name/email, editor, credential helpers, and optional GPG signing key generation. GitHub CLI installation and authentication is handled separately via `scripts/setup/gh-cli.sh`.
 
 **Neovim Plugins**: After symlinking configs, the installer runs `nvim --headless +PlugInstall +qall` to install plugins and compiles telescope-fzf-native with make.
 
@@ -151,16 +154,26 @@ LSP servers are configured via handlers in `mason-lspconfig.setup()`, with lua_l
 ## Setup Scripts
 
 The `scripts/setup/` directory contains modular installation scripts for specific tools:
-- `git.sh` - Interactive git configuration
-- `docker.sh` - Docker installation
+- `1password-cli.sh` - 1Password CLI
 - `ansible.sh` - Ansible setup
 - `claude-code.sh` - Claude Code installation
 - `containerlab.sh` - Containerlab setup
+- `docker.sh` - Docker installation
+- `gh-cli.sh` - GitHub CLI installation and authentication
+- `git.sh` - Interactive git configuration
+- `neovim.sh` - Neovim installation (AppImage for Linux)
 - `uv.sh` - UV Python package manager
 - `vhs.sh` - VHS terminal recorder
-- `1password-cli.sh` - 1Password CLI
 
 These can be run independently or are called by the main `install.sh` script.
+
+## Custom Bin Tools
+
+The `bin/` directory contains custom command-line utilities that are stowed to `~/.local/bin`:
+
+- **`torero-secrets`** - 1Password secrets injection tool for Torero containers. Fetches secrets from 1Password via the `op` CLI and injects them into Torero containers at runtime. Supports profile-based configuration for AWS, Azure, Netbox, and other services.
+
+- **`transcribe`** - Audio/video transcription wrapper using OpenAI Whisper. Provides a user-friendly CLI interface for transcribing audio and video files with support for multiple models (tiny, base, small, medium, large, turbo) and output formats (txt, vtt, srt, json). Automatically manages a Python virtual environment and dependencies.
 
 ## Common Modifications
 
