@@ -1,0 +1,186 @@
+#!/usr/bin/env bash
+# cmgmt - container management utility
+# manage docker containers and images
+
+set -euo pipefail
+
+# colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # no color
+
+# logging functions
+log() { echo -e "${GREEN}[INFO]${NC} $1"; }
+warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+error() { echo -e "${RED}[ERROR]${NC} $1" >&2; }
+info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+
+# usage information
+usage() {
+    cat << EOF
+${GREEN}cmgmt${NC} - container management utility
+
+${BLUE}USAGE:${NC}
+    cmgmt [OPTIONS]
+
+${BLUE}OPTIONS:${NC}
+    --clean-containers    Stop and remove all containers
+    --clean-all           Stop and remove all containers, then remove all images
+    --help, -h            Show this help message
+
+${BLUE}EXAMPLES:${NC}
+    # stop and remove all containers
+    cmgmt --clean-containers
+
+    # full cleanup: containers and images
+    cmgmt --clean-all
+
+EOF
+}
+
+# check if docker is available
+check_docker() {
+    if ! command -v docker >/dev/null 2>&1; then
+        error "docker is not installed or not in PATH"
+        exit 1
+    fi
+
+    if ! docker info >/dev/null 2>&1; then
+        error "docker daemon is not running or you don't have permission"
+        exit 1
+    fi
+}
+
+# stop all running containers
+stop_containers() {
+    local containers
+    containers=$(docker ps -q 2>/dev/null)
+
+    if [[ -z "$containers" ]]; then
+        info "no running containers to stop"
+        return 0
+    fi
+
+    local count
+    count=$(echo "$containers" | wc -l)
+    log "stopping $count running container(s)..."
+
+    if docker stop $containers >/dev/null 2>&1; then
+        log "all containers stopped"
+    else
+        warn "some containers may have failed to stop"
+    fi
+}
+
+# remove all containers (running and stopped)
+remove_containers() {
+    local containers
+    containers=$(docker ps -aq 2>/dev/null)
+
+    if [[ -z "$containers" ]]; then
+        info "no containers to remove"
+        return 0
+    fi
+
+    local count
+    count=$(echo "$containers" | wc -l)
+    log "removing $count container(s)..."
+
+    if docker rm -f $containers >/dev/null 2>&1; then
+        log "all containers removed"
+    else
+        warn "some containers may have failed to remove"
+    fi
+}
+
+# remove all images
+remove_images() {
+    local images
+    images=$(docker images -q 2>/dev/null)
+
+    if [[ -z "$images" ]]; then
+        info "no images to remove"
+        return 0
+    fi
+
+    local count
+    count=$(echo "$images" | wc -l)
+    log "removing $count image(s)..."
+
+    if docker rmi -f $images >/dev/null 2>&1; then
+        log "all images removed"
+    else
+        warn "some images may have failed to remove"
+    fi
+}
+
+# clean containers only
+clean_containers() {
+    log "cleaning containers..."
+    echo
+
+    stop_containers
+    remove_containers
+
+    echo
+    log "container cleanup complete"
+}
+
+# clean everything
+clean_all() {
+    log "cleaning all containers and images..."
+    echo
+
+    stop_containers
+    remove_containers
+    remove_images
+
+    echo
+    log "full cleanup complete"
+}
+
+# main function
+main() {
+    if [[ $# -eq 0 ]]; then
+        usage
+        exit 0
+    fi
+
+    local action=""
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --clean-containers)
+                action="clean_containers"
+                shift
+                ;;
+            --clean-all)
+                action="clean_all"
+                shift
+                ;;
+            --help|-h)
+                usage
+                exit 0
+                ;;
+            *)
+                error "unknown option: $1"
+                echo
+                usage
+                exit 1
+                ;;
+        esac
+    done
+
+    if [[ -z "$action" ]]; then
+        error "no action specified"
+        usage
+        exit 1
+    fi
+
+    check_docker
+    $action
+}
+
+main "$@"
