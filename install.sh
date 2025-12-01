@@ -86,7 +86,7 @@ setup_symlinks() {
         # stow bin files to ~/.local/bin
         if [ -d "bin" ]; then
             log "Symlinking bin directory to ~/.local/bin..."
-            stow -t "$HOME/.local" bin 2>/dev/null || {
+            stow -t "$HOME/.local/bin" bin 2>/dev/null || {
                 warn "Stow failed for bin directory. Using manual symlink creation..."
                 setup_bin_manual
             }
