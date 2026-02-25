@@ -1,0 +1,62 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+command_timeout = 2000
+palette = "everforest"
+format = "$directory$git_branch$git_status$cmd_duration\n$character"
+
+[package]
+disabled = true
+
+[directory]
+style = "bold green"
+
+[git_branch]
+style = "bold pink"
+symbol = "󰘬 "
+
+[git_status]
+format = '([\[$all_status$ahead_behind \]]($style) )'
+ahead = " [](purple)[$count](foreground)"
+behind = " [](cyan)[$count](foreground)"
+conflicted = ' [=$count](orange)'
+deleted = ' [✘$count](comment)'
+diverged = " [](cyan)[$ahead_count](foreground)[](purple)[$behind_count](foreground)"
+modified = ' [*$count](red)'
+renamed = " [»$count](purple)"
+staged = " [+$count](green)"
+stashed = " [\\$$count](orange)"
+style = "bold red"
+untracked = " [?$count](cyan)"
+
+[git_commit]
+only_detached = true
+style = "comment"
+format = "[$hash]($style) "
+
+[ruby]
+symbol = " "
+
+[nodejs]
+symbol = "󰎙 "
+
+[python]
+symbol = "󰌠 "
+
+[golang]
+symbol = "󰟓 "
+
+[rust]
+symbol = "󱘗 "
+
+[palettes.everforest]
+background = "#2b3339"
+foreground = "#d3c6aa"
+comment = "#859289"
+cyan = "#7fbbb3"
+green = "#a7c080"
+orange = "#e69875"
+pink = "#d699b6"
+purple = "#d699b6"
+red = "#e67e80"
+yellow = "#dbbc7f"
