@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~
+\#*\#
+
+# Local overrides
+*.local
+*.secrets
+
+# Tmux plugins (managed by TPM)
+tmux/.config/tmux/plugins/
