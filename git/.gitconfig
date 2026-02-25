@@ -1,0 +1,102 @@
+[alias]
+  a = add
+  aa = add --all
+  ap = add --patch
+  b = branch
+  ba = branch --all
+  br = branch --remote
+  ca = commit --amend
+  cm = commit -v
+  co = checkout
+  df = diff
+  dc = diff --cached
+  f = fetch
+  l = log --date=format:'%b %d, %Y' --pretty=format:'%C(yellow bold)%h%Creset%C(white)%d%Creset %s%n%C(blue)%aN <%ae> | %cd%n'
+  lg = log --graph --stat --date=format:'%b %d, %Y' --pretty=format:'%C(yellow bold)%h%Creset%C(white)%d%Creset %s%n%C(blue)%aN <%ae> | %cd%n'
+  pl = pull
+  ps = push
+  psf = push --force-with-lease
+  recent = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+  rv = remote -v
+  s = status
+  re = reset
+  rsh = reset --soft HEAD^
+
+[apply]
+  whitespace = nowarn
+
+[color]
+  ui = true
+
+[color "branch"]
+  current = white bold
+  local = yellow
+  remote = cyan
+
+[color "diff"]
+  frag = cyan bold
+  meta = white
+  new = green bold
+  old = red bold
+  commit = yellow bold
+  whitespace = red reverse
+
+[color "diff-highlight"]
+  oldNormal = red bold
+  oldHighlight = red bold 52
+  newNormal = green bold
+  newHighlight = green bold 22
+
+[color "status"]
+  untracked = cyan
+
+[commit]
+  template = ~/.gitmessage
+  gpgSign = true
+
+[core]
+  autocrlf = input
+  excludesfile = ~/.gitignore_global
+  ignorecase = false
+  safecrlf = warn
+  abbrev = 7
+  editor = nvim
+
+[diff]
+  tool = vimdiff3
+  submodule = log
+
+[pager]
+  diff = diff-so-fancy | less --tabs=4 -RFXS
+  log = less -+X
+
+[fetch]
+  prune = true
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+
+[init]
+  defaultBranch = main
+
+[merge]
+  conflictstyle = diff3
+  ff = false
+
+[pull]
+  rebase = merges
+
+[push]
+  default = simple
+
+[status]
+  submoduleSummary = true
+
+[tag]
+  gpgSign = true
+
+[include]
+  path = ~/.gitconfig.local
