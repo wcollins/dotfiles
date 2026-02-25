@@ -1,0 +1,40 @@
+# Reload config with "shift-command-,"
+
+# Window options
+window-padding-y = 0
+window-padding-x = 0
+window-padding-balance = true
+window-decoration = true
+# macos-titlebar-style = transparent
+# macos-titlebar-style = hidden
+macos-titlebar-style = tabs
+
+# Background
+# background = #2d353b
+# background-opacity = 0.7
+background-blur-radius = 20
+
+# Theme
+theme = Everforest Dark Hard
+
+# Shaders
+custom-shader = shaders/cursor_smear.glsl
+
+# Cursor
+cursor-style = bar
+cursor-style-blink = true
+shell-integration-features = no-cursor
+cursor-color = #E69875
+cursor-invert-fg-bg = true
+mouse-hide-while-typing = true
+custom-shader-animation = true
+
+# Text settings
+font-family = MesloLGS Nerd Font Mono
+font-size = 14
+copy-on-select = true
+
+# Misc settings
+auto-update = check
+auto-update-channel = stable
+confirm-close-surface = false
