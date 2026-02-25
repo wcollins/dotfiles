@@ -1,0 +1,11 @@
+\.git
+\.gitignore
+\.editorconfig
+\.shellcheckrc
+\.stow-local-ignore
+README.*
+LICENSE.*
+setup\.sh
+shared
+scripts
+tests
