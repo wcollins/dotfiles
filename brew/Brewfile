@@ -1,0 +1,52 @@
+# CLI essentials
+brew "bash"
+brew "bat"
+brew "coreutils"
+brew "curl"
+brew "diff-so-fancy"
+brew "eza"
+brew "fd"
+brew "fzf"
+brew "gh"
+brew "git"
+brew "htop"
+brew "jq"
+brew "less"
+brew "neovim"
+brew "ripgrep"
+brew "starship"
+brew "stow"
+brew "tmux"
+brew "tree"
+brew "wget"
+brew "zoxide"
+brew "zsh"
+
+# Development
+brew "mise"
+brew "cmake"
+brew "gcc"
+brew "gnu-sed"
+brew "shellcheck"
+brew "shfmt"
+
+# Git tools
+brew "git-quick-stats"
+brew "lazygit"
+
+# 1Password
+cask "1password-cli"
+
+# Extras
+brew "btop"
+brew "fastfetch"
+brew "tealdeer"
+brew "yq"
+
+# Fonts
+cask "font-jetbrains-mono"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-symbols-only-nerd-font"
+
+# Terminal
+cask "ghostty"
