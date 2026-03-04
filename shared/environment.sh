@@ -4,9 +4,12 @@
 #
 # Usage: source ~/dotfiles/shared/environment.sh
 
-# BSD ls colors
-export CLICOLOR=1
-export LSCOLORS=GxFxCxDxBxegedabagaced
+# macOS-only settings
+if [[ "$(uname)" == "Darwin" ]]; then
+  export CLICOLOR=1
+  export LSCOLORS=GxFxCxDxBxegedabagaced
+  export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+fi
 
 # Editor
 export EDITOR="nvim"
@@ -15,9 +18,6 @@ export BUNDLER_EDITOR="${EDITOR}"
 
 # Manual pages
 export MANPAGER="less -X"
-
-# Homebrew
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # XDG Base Directory
 export XDG_CONFIG_HOME="${HOME}/.config"
