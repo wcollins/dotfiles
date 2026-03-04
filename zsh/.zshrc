@@ -1,8 +1,10 @@
-# Homebrew
-if [[ "$(arch)" == arm64 ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-else
-  eval "$(/usr/local/bin/brew shellenv)"
+# Homebrew (macOS only)
+if [[ "$(uname)" == "Darwin" ]]; then
+  if [[ "$(arch)" == arm64 ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  else
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 fi
 
 export PATH="$HOME/.local/bin:$PATH"
@@ -39,7 +41,7 @@ setopt HIST_VERIFY
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
 
-# Homebrew completions
+# Homebrew completions (macOS)
 if type brew &>/dev/null; then
   FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
@@ -56,11 +58,21 @@ fi
 typeset -U path
 
 # Starship prompt
-eval "$(starship init zsh)"
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi
 
 # zoxide (smarter cd)
-eval "$(zoxide init zsh)"
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+fi
 
 # fzf key bindings and completion
-[[ -f "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh" ]] && source "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh"
-[[ -f "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.zsh" ]] && source "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.zsh"
+for _fzf_file in \
+  "${HOMEBREW_PREFIX:-}/opt/fzf/shell/key-bindings.zsh" \
+  "${HOMEBREW_PREFIX:-}/opt/fzf/shell/completion.zsh" \
+  "/usr/share/doc/fzf/examples/key-bindings.zsh" \
+  "/usr/share/doc/fzf/examples/completion.zsh"; do
+  [[ -f "$_fzf_file" ]] && source "$_fzf_file"
+done
+unset _fzf_file
