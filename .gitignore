@@ -7,9 +7,13 @@
 *~
 \#*\#
 
-# Local overrides
+# Local overrides (e.g. .zshrc.local, .gitconfig.local)
 *.local
+!.local
 *.secrets
 
 # Tmux plugins (managed by TPM)
 tmux/.config/tmux/plugins/
+
+# Feature eval space
+plan/
