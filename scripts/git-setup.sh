@@ -82,6 +82,21 @@ prompt_identity() {
     error "Name and email are required"
     exit 1
   fi
+
+  # Warn if using a personal email instead of GitHub noreply
+  if [[ "${EMAIL}" != *"@users.noreply.github.com" ]]; then
+    warn "Using a personal email exposes it in every commit"
+    info "  Recommended: use your GitHub noreply address"
+    info "  Format: <id>+<username>@users.noreply.github.com"
+    info "  Find yours at: https://github.com/settings/emails"
+    printf "  Continue with '%s'? [y/N]: " "${EMAIL}"
+    local confirm
+    read -r confirm
+    if [[ "${confirm}" != [yY] ]]; then
+      info "Aborted — re-run with your noreply email"
+      exit 0
+    fi
+  fi
 }
 
 ensure_ssh_key() {
