@@ -42,6 +42,16 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus right" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus down" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus up" })
 
+-- Word wrap for prose filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("prose-wrap", { clear = true }),
+  pattern = { "markdown", "text", "gitcommit" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+  end,
+})
+
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
