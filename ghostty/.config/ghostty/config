@@ -38,3 +38,8 @@ copy-on-select = true
 auto-update = check
 auto-update-channel = stable
 confirm-close-surface = false
+
+# Keybindings
+keybind = ctrl+shift+p=new_split:right
+keybind = ctrl+shift+h=goto_split:left
+keybind = ctrl+shift+l=goto_split:right
