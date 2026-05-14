@@ -88,8 +88,13 @@ resolve_profile() {
       exit 1
     fi
     PROFILE="macos"
+  elif [[ "${PROFILE}" == "macos" ]]; then
+    error "--profile macos is auto-detected and only valid on Darwin"
+    exit 1
   elif [[ -z "${PROFILE}" ]]; then
     PROFILE="server"
+    info "Linux detected with no --profile; defaulting to 'server' (CLI-only)."
+    info "For full desktop parity (Ghostty + fonts), re-run with: ./setup.sh --profile desktop"
   fi
 
   case "${PROFILE}" in
@@ -253,7 +258,7 @@ main() {
   echo "  -> Create ~/.secrets with OP_SERVICE_ACCOUNT_TOKEN for 1Password"
   echo "  -> Run 'secrets --load' to configure vault/item and populate ~/.vars"
   if [[ "${PROFILE}" == "desktop" ]]; then
-    echo "  -> Build Ghostty from source: https://github.com/ghostty-org/ghostty"
+    echo "  -> Launch Ghostty and verify font + glyphs render correctly"
   fi
   echo ""
 }

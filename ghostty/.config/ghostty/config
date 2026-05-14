@@ -30,7 +30,7 @@ mouse-hide-while-typing = true
 custom-shader-animation = true
 
 # Text settings
-font-family = MesloLGS Nerd Font Mono
+font-family = JetBrainsMono Nerd Font Mono
 font-size = 14
 copy-on-select = true
 
