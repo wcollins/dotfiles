@@ -67,6 +67,8 @@ install_apt_packages() {
     tmux
     tree
     wget
+    wl-clipboard
+    xclip
     zsh
     zoxide
   )
@@ -312,6 +314,36 @@ install_fastfetch() {
   rm -rf "${tmp}"
 }
 
+# --- Ghostty (desktop only) --------------------------------------------------
+
+install_ghostty() {
+  if command -v ghostty &>/dev/null; then
+    info "Ghostty already installed"
+    return 0
+  fi
+  info "Installing Ghostty..."
+
+  local codename
+  # shellcheck source=/dev/null
+  codename=$(. /etc/os-release && echo "${VERSION_CODENAME:-stable}")
+
+  sudo mkdir -p /etc/apt/keyrings
+  if ! curl -fsSL https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc \
+    | sudo gpg --dearmor --yes -o /etc/apt/keyrings/ghostty.gpg; then
+    warn "Failed to fetch Ghostty signing key; skipping Ghostty install"
+    warn "See https://debian.griffo.io/install-latest-ghostty-in-debian.html"
+    return 1
+  fi
+  echo "deb [signed-by=/etc/apt/keyrings/ghostty.gpg] https://debian.griffo.io/apt ${codename} main" \
+    | sudo tee /etc/apt/sources.list.d/ghostty.list >/dev/null
+  sudo apt update -qq
+  if ! sudo apt install -y ghostty; then
+    warn "Failed to install ghostty via apt; skipping"
+    warn "See https://debian.griffo.io/install-latest-ghostty-in-debian.html"
+    return 1
+  fi
+}
+
 # --- Nerd Fonts (desktop only) -----------------------------------------------
 
 install_fonts() {
@@ -370,6 +402,7 @@ main() {
 
   # Desktop-only packages
   if [[ "${PROFILE}" == "desktop" ]]; then
+    install_ghostty || warn "Continuing without Ghostty"
     install_fonts
   fi
 
