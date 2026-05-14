@@ -208,7 +208,7 @@ install_diff_so_fancy() {
     return
   fi
   info "Installing diff-so-fancy..."
-  npm install -g diff-so-fancy
+  npm install -g --prefix="${HOME}/.local" diff-so-fancy
 }
 
 # --- lazygit -----------------------------------------------------------------
