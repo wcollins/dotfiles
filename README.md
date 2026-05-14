@@ -7,30 +7,45 @@
 ```
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![macOS](https://img.shields.io/badge/macOS-only-blue)](https://github.com/wcollins/dotfiles)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Debian-blue)](https://github.com/wcollins/dotfiles)
 [![Shell: Zsh](https://img.shields.io/badge/shell-zsh-green)](https://github.com/wcollins/dotfiles)
 [![Editor: Neovim](https://img.shields.io/badge/editor-neovim-57A143)](https://neovim.io)
 
-> macOS dotfiles managed with GNU Stow. Everforest theme everywhere.
+> macOS and Debian dotfiles managed with GNU Stow. Everforest theme everywhere.
 
 Ghostty + Neovim + Tmux + Zsh + Starship — consistent Everforest Dark palette across everything.
 
 ## Quick Start
 
-Requires macOS, [Homebrew](https://brew.sh), and [GNU Stow](https://www.gnu.org/software/stow/) (`brew install stow`).
+[GNU Stow](https://www.gnu.org/software/stow/) is required on both platforms. `setup.sh` auto-detects the OS.
+
+### macOS
+
+Requires [Homebrew](https://brew.sh) (`brew install stow`).
 
 ```bash
 git clone https://github.com/wcollins/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
-./setup.sh            # symlink packages into ~
-./setup.sh --dry-run  # preview first
+./setup.sh                            # symlink packages into ~
+./setup.sh --dry-run                  # preview first
+
+brew bundle install --file=brew/Brewfile  # install CLI tools, fonts, Ghostty
 ```
 
-Then install dependencies:
+### Debian
+
+Requires `sudo` access. `setup.sh` runs `scripts/install-packages.sh` automatically — installs CLI tools via apt plus alternative installers for Starship, mise, lazygit, etc.
 
 ```bash
-brew bundle install --file=~/dotfiles/brew/Brewfile
+git clone https://github.com/wcollins/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+sudo apt install -y stow
+
+./setup.sh --profile desktop          # daily-driver: GUI, Ghostty, Nerd Fonts
+./setup.sh --profile server           # headless / CLI-only (default if --profile omitted)
+./setup.sh --profile wsl              # Windows Subsystem for Linux
+./setup.sh --profile desktop --dry-run  # preview first
 ```
 
 > [!NOTE]
@@ -42,8 +57,8 @@ Each directory is a [GNU Stow](https://www.gnu.org/software/stow/) package — f
 
 | Package | What it configures |
 |---------|--------------------|
-| `brew` | Brewfile — fzf, ripgrep, eza, lazygit, bat, zoxide, and more |
-| `ghostty` | Ghostty terminal — Everforest Dark Hard, MesloLGS Nerd Font, cursor smear shader |
+| `brew` | Brewfile — fzf, ripgrep, eza, lazygit, bat, zoxide, and more (macOS only) |
+| `ghostty` | Ghostty terminal — Everforest Dark Hard, JetBrains Mono Nerd Font, cursor smear shader |
 | `git` | Git config with SSH commit signing, diff-so-fancy, aliases |
 | `nvim` | Neovim with lazy.nvim |
 | `secrets` | 1Password CLI secrets loader (configurable vault/item) |
