@@ -4,16 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level directory is a stow package that mirrors the target home directory structure. Stow creates symlinks from `~/dotfiles/<package>/...` into `$HOME/...`.
+macOS and Debian dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level directory is a stow package that mirrors the target home directory structure. Stow creates symlinks from `~/dotfiles/<package>/...` into `$HOME/...`. `setup.sh` auto-detects the OS via `uname -s`.
 
 ## Setup
 
 ```bash
-./setup.sh            # symlink all packages via stow
-./setup.sh --dry-run  # preview without changes
+./setup.sh                       # macOS: symlink packages (auto-detected)
+./setup.sh --profile desktop     # Debian daily-driver: CLI + Ghostty + fonts
+./setup.sh --profile server      # Debian headless / CLI-only (default on Linux)
+./setup.sh --profile wsl         # Windows Subsystem for Linux
+./setup.sh --dry-run             # preview without changes (any profile)
 ```
 
-After setup, install dependencies:
+On Linux, `setup.sh` invokes `scripts/install-packages.sh --profile <name>` automatically — installs apt packages plus alternative installers for Starship, mise, lazygit, eza, gh, 1Password CLI, and (for `desktop`) Ghostty via the [debian.griffo.io](https://debian.griffo.io/install-latest-ghostty-in-debian.html) apt repo and JetBrains Mono Nerd Font.
+
+On macOS, install CLI tools and casks separately:
 ```bash
 brew bundle install --file=~/dotfiles/brew/Brewfile
 ```
@@ -22,8 +27,8 @@ brew bundle install --file=~/dotfiles/brew/Brewfile
 
 | Package | Target | What it configures |
 |---------|--------|--------------------|
-| `brew` | (not stowed) | Brewfile with CLI tools, dev dependencies, fonts |
-| `ghostty` | `~/.config/ghostty/` | Ghostty terminal (Everforest Dark Hard, cursor smear shader) |
+| `brew` | (not stowed, macOS only) | Brewfile with CLI tools, dev dependencies, fonts |
+| `ghostty` | `~/.config/ghostty/` | Ghostty terminal (Everforest Dark Hard, cursor smear shader); stowed on `desktop` profile only on Linux |
 | `git` | `~/.gitconfig`, `~/.gitignore_global`, `~/.gitmessage` | Git config with SSH signing, diff-so-fancy (identity via `scripts/git-setup.sh`) |
 | `nvim` | `~/.config/nvim/` | Neovim with lazy.nvim plugin manager |
 | `secrets` | `~/.local/bin/secrets` | 1Password CLI secrets loader (`secrets --load`, `--show`) |
@@ -34,6 +39,8 @@ brew bundle install --file=~/dotfiles/brew/Brewfile
 ## Architecture
 
 - **Stow convention**: Files inside each package directory are placed relative to `$HOME`. For example, `git/.gitconfig` becomes `~/.gitconfig`, and `nvim/.config/nvim/init.lua` becomes `~/.config/nvim/init.lua`.
+- **OS detection**: `setup.sh` reads `uname -s` and branches between macOS and Linux. On Linux, `--profile {server|desktop|wsl}` selects which stow packages to apply (`server`/`wsl` skip `ghostty`); when omitted, defaults to `server` and prints a hint about `--profile desktop`. macOS-specific bits in shell config and `shared/environment.sh` are gated with `[[ "$(uname)" == "Darwin" ]]`.
+- **`scripts/install-packages.sh`**: Debian package installer invoked by `setup.sh` on Linux. Installs apt packages (including `xclip` and `wl-clipboard` for tmux clipboard integration) and alternative installers for tools not in apt (Starship, mise, eza, gh, 1Password CLI, lazygit, shfmt, tealdeer, yq, fastfetch, JetBrains Mono Nerd Font, and Ghostty on `desktop`).
 - **`.stow-local-ignore`**: Excludes repo-level files (setup.sh, shared/, README, etc.) from stow operations.
 - **`shared/environment.sh`**: Shared env vars sourced by `.zshrc` (not stowed directly). Sets XDG dirs, editor, FZF config.
 - **Local overrides**: `~/.zshrc.local` and `~/.gitconfig.local` are sourced but gitignored (`*.local` pattern). Machine-specific config goes there.
