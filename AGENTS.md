@@ -18,6 +18,8 @@ macOS and Debian dotfiles managed with [GNU Stow](https://www.gnu.org/software/s
 
 On Linux, `setup.sh` invokes `scripts/install-packages.sh --profile <name>` automatically — installs apt packages plus alternative installers for Starship, mise, lazygit, eza, gh, 1Password CLI, and (for `desktop`) Ghostty via the [debian.griffo.io](https://debian.griffo.io/install-latest-ghostty-in-debian.html) apt repo and JetBrains Mono Nerd Font.
 
+On Linux, setup also offers to make zsh your default login shell — an interactive `Make zsh your default shell? [Y/n]` prompt (default Yes) that runs `chsh`. Installing the `zsh` package alone does not change your login shell, so without this the zsh config never loads on a fresh Debian box. The prompt is skipped under `--dry-run` or when stdin is not a TTY, is idempotent (skips if the login shell is already zsh), and never aborts setup if `chsh` fails. After a switch, log out and back in (or open a new terminal) for zsh to take effect.
+
 On macOS, install CLI tools and casks separately:
 ```bash
 brew bundle install --file=~/dotfiles/brew/Brewfile
@@ -45,6 +47,7 @@ brew bundle install --file=~/dotfiles/brew/Brewfile
 - **`shared/environment.sh`**: Shared env vars sourced by `.zshrc` (not stowed directly). Sets XDG dirs, editor, FZF config.
 - **Local overrides**: `~/.zshrc.local` and `~/.gitconfig.local` are sourced but gitignored (`*.local` pattern). Machine-specific config goes there.
 - **Git signing**: Commits are signed using SSH keys. Run `scripts/git-setup.sh` to configure identity and signing key (called automatically by `setup.sh`). The `[user]` section and signing key are stored in `~/.gitconfig.local` (gitignored). To reconfigure: `scripts/git-setup.sh`. To verify: `scripts/git-setup.sh --check`.
+- **Default shell**: `setup.sh::switch_default_shell()` runs on Linux after stow/git-setup and before the "Next steps" block. It reads the current login shell from `getent passwd "$USER"` (field 7, not `$SHELL`); if it isn't zsh, it prompts `Make zsh your default shell? [Y/n]` (default Yes) and switches via `sudo chsh`. It is idempotent (skips when already zsh), treats non-TTY and `--dry-run` as No, ensures the resolved zsh path is in `/etc/shells` (appending via `sudo` as a safety net), and on failure `warn`s with the manual `chsh` command without aborting setup. A successful switch appends a re-login reminder to "Next steps"; the `wsl` profile additionally notes the Windows terminal may launch a different shell regardless of `chsh`.
 - **mise**: Runtime version manager activated in `.zshrc` (guarded). Manages Go, Node, and other tool versions per-project. Installed via Brewfile.
 - **secrets**: `secrets --load` reads `OP_SERVICE_ACCOUNT_TOKEN`, `VAULT`, and `ITEM` from `~/.secrets`, fetches env vars from 1Password, and writes exports to `~/.vars`. On first run, prompts for vault and item names and saves them. Use `--vault`/`--item` flags for one-time overrides. The `.zshrc` sources `~/.vars` automatically. Both `~/.secrets` and `~/.vars` are local-only (not committed).
 
