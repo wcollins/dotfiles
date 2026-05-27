@@ -20,6 +20,7 @@ DRY_RUN=false
 DOTFILES="${HOME}/dotfiles"
 OS=$(uname -s)
 PROFILE=""
+SHELL_SWITCHED=false
 
 show_help() {
   cat <<EOF
@@ -101,6 +102,68 @@ resolve_profile() {
     macos|server|desktop|wsl) ;;
     *) error "Invalid profile: ${PROFILE}. Must be: server, desktop, or wsl"; exit 1 ;;
   esac
+}
+
+# Offer to make zsh the default login shell (Linux only, idempotent).
+switch_default_shell() {
+  # macOS already defaults to zsh; nothing to do.
+  [[ "${OS}" == "Linux" ]] || return 0
+
+  # Read the configured login shell from passwd (field 7), not $SHELL,
+  # which reflects the invoking shell rather than the login shell.
+  local current_shell
+  current_shell=$(getent passwd "${USER}" | cut -d: -f7) || current_shell=""
+  if [[ "${current_shell}" == *zsh ]]; then
+    info "Login shell already zsh; skipping."
+    return 0
+  fi
+
+  local zsh_path
+  if ! zsh_path=$(command -v zsh); then
+    warn "zsh not found on PATH; skipping default-shell switch."
+    return 0
+  fi
+
+  if [[ "${DRY_RUN}" == "true" ]]; then
+    info "[DRY RUN] Would change login shell to ${zsh_path}"
+    return 0
+  fi
+
+  # Non-interactive runs default to No so setup never blocks on input.
+  if [[ ! -t 0 ]]; then
+    info "Non-interactive; keeping current shell. To switch later: chsh -s ${zsh_path}"
+    return 0
+  fi
+
+  local reply=""
+  read -r -p "Make zsh your default shell? [Y/n] " reply || true
+  case "${reply}" in
+    "" | [Yy] | [Yy][Ee][Ss]) ;;
+    *)
+      info "Keeping current shell. To switch later: chsh -s ${zsh_path}"
+      return 0
+      ;;
+  esac
+
+  # zsh must be a valid login shell; append as a safety net (present on trixie).
+  if ! grep -qxF "${zsh_path}" /etc/shells 2>/dev/null; then
+    if ! echo "${zsh_path}" | sudo tee -a /etc/shells >/dev/null; then
+      warn "Could not add ${zsh_path} to /etc/shells; skipping default-shell switch."
+      return 0
+    fi
+  fi
+
+  # sudo keeps chsh non-interactive, consistent with the rest of the installer.
+  if sudo chsh -s "${zsh_path}" "${USER}"; then
+    SHELL_SWITCHED=true
+    info "Default shell changed to zsh."
+    if [[ "${PROFILE}" == "wsl" ]]; then
+      info "WSL: the Windows terminal may launch a different shell regardless of chsh."
+      info "If zsh doesn't start automatically, set it in your terminal profile or /etc/wsl.conf."
+    fi
+  else
+    warn "Failed to change login shell. To switch manually: chsh -s ${zsh_path}"
+  fi
 }
 
 main() {
@@ -245,6 +308,9 @@ main() {
     fi
   fi
 
+  # Offer to switch the default login shell to zsh (Linux only)
+  switch_default_shell
+
   # Platform-aware next steps
   printf "\n[DOTFILES] Setup complete!\n\n"
 
@@ -259,6 +325,9 @@ main() {
   echo "  -> Run 'secrets --load' to configure vault/item and populate ~/.vars"
   if [[ "${PROFILE}" == "desktop" ]]; then
     echo "  -> Launch Ghostty and verify font + glyphs render correctly"
+  fi
+  if [[ "${SHELL_SWITCHED}" == "true" ]]; then
+    echo "  -> Default shell changed to zsh — log out and back in (or open a new terminal)"
   fi
   echo ""
 }
