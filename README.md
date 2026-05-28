@@ -51,6 +51,9 @@ sudo apt install -y stow
 > [!NOTE]
 > Install [Zap](https://www.zapzsh.com) for zsh plugin management. Tmux plugins install with `<prefix> + I` after first launch.
 
+> [!TIP]
+> On Linux, setup offers to make zsh your default login shell (`Make zsh your default shell? [Y/n]`, default Yes). Installing the `zsh` package doesn't change your login shell on its own, so accept this to have the config load on a fresh box — then log out and back in. It's idempotent and skipped under `--dry-run` or non-interactive runs.
+
 ## What's Inside
 
 Each directory is a [GNU Stow](https://www.gnu.org/software/stow/) package — files mirror their target location under `$HOME`.
@@ -81,6 +84,7 @@ Machine-specific config goes in these files (gitignored via `*.local`):
 - Create `~/.zshrc.local` for machine-specific shell config
 - Install tmux plugins: open tmux, press `C-a` then `I`
 - For 1Password secrets: create `~/.secrets` with `OP_SERVICE_ACCOUNT_TOKEN`, then run `secrets --load`
+- On Linux, if you accepted the default-shell prompt, log out and back in (or open a new terminal) so zsh becomes active
 
 ## License
 MIT - Do whatever you want with it
