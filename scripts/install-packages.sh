@@ -66,6 +66,7 @@ install_apt_packages() {
     stow
     tmux
     tree
+    unzip
     wget
     wl-clipboard
     xclip
