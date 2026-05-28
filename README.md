@@ -35,7 +35,7 @@ brew bundle install --file=brew/Brewfile  # install CLI tools, fonts, Ghostty
 
 ### Debian
 
-Requires `sudo` access. `setup.sh` runs `scripts/install-packages.sh` automatically — installs CLI tools via apt plus alternative installers for Starship, mise, lazygit, etc.
+Requires `sudo` access. `setup.sh` runs `scripts/install-packages.sh` automatically — installs CLI tools via apt plus alternative installers for Starship, mise, lazygit, Neovim 0.11+ (AppImage when apt's version is older), etc.
 
 ```bash
 git clone https://github.com/wcollins/dotfiles.git ~/dotfiles

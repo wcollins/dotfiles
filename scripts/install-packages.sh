@@ -18,9 +18,9 @@ ARCH=$(dpkg --print-architecture 2>/dev/null || uname -m)
 
 # Normalize architecture names for GitHub releases
 case "${ARCH}" in
-  amd64|x86_64)  ARCH_GO="amd64"; ARCH_RUST="x86_64"; ARCH_GH="x86_64" ;;
-  arm64|aarch64) ARCH_GO="arm64"; ARCH_RUST="aarch64"; ARCH_GH="arm64" ;;
-  *) warn "Unsupported architecture: ${ARCH}"; ARCH_GO="${ARCH}"; ARCH_RUST="${ARCH}"; ARCH_GH="${ARCH}" ;;
+  amd64|x86_64)  ARCH_GO="amd64"; ARCH_RUST="x86_64"; ARCH_GH="x86_64"; ARCH_NVIM="x86_64" ;;
+  arm64|aarch64) ARCH_GO="arm64"; ARCH_RUST="aarch64"; ARCH_GH="arm64"; ARCH_NVIM="arm64" ;;
+  *) warn "Unsupported architecture: ${ARCH}"; ARCH_GO="${ARCH}"; ARCH_RUST="${ARCH}"; ARCH_GH="${ARCH}"; ARCH_NVIM="${ARCH}" ;;
 esac
 
 while [[ $# -gt 0 ]]; do
@@ -66,6 +66,7 @@ install_apt_packages() {
     stow
     tmux
     tree
+    unzip
     wget
     wl-clipboard
     xclip
@@ -97,6 +98,7 @@ install_symlinks() {
 }
 
 # --- Neovim (AppImage) ------------------------------------------------------
+# Requires Neovim >= 0.11 (mason-lspconfig 2.x uses vim.lsp.enable / vim.lsp.config).
 
 install_neovim() {
   if command -v nvim &>/dev/null; then
@@ -105,18 +107,18 @@ install_neovim() {
     local major minor
     major="${ver%%.*}"
     minor="${ver#*.}"
-    if [[ "${major}" -gt 0 ]] || [[ "${minor}" -ge 9 ]]; then
-      info "Neovim already installed (v${ver})"
+    if [[ "${major}" -gt 0 ]] || [[ "${minor}" -ge 11 ]]; then
+      info "Neovim already installed (v${ver}, >= 0.11)"
       return
     fi
-    warn "Neovim too old (v${ver}), upgrading via AppImage..."
+    warn "Neovim too old (v${ver}, need >= 0.11), upgrading via AppImage..."
   fi
 
-  info "Installing Neovim AppImage..."
+  info "Installing Neovim AppImage (>= 0.11)..."
   local tmp
   tmp=$(mktemp -d)
   curl -fsSL -o "${tmp}/nvim.appimage" \
-    "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
+    "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH_NVIM}.appimage"
   chmod +x "${tmp}/nvim.appimage"
   mv "${tmp}/nvim.appimage" "${HOME}/.local/bin/nvim"
   rm -rf "${tmp}"
