@@ -18,9 +18,9 @@ ARCH=$(dpkg --print-architecture 2>/dev/null || uname -m)
 
 # Normalize architecture names for GitHub releases
 case "${ARCH}" in
-  amd64|x86_64)  ARCH_GO="amd64"; ARCH_RUST="x86_64"; ARCH_GH="x86_64" ;;
-  arm64|aarch64) ARCH_GO="arm64"; ARCH_RUST="aarch64"; ARCH_GH="arm64" ;;
-  *) warn "Unsupported architecture: ${ARCH}"; ARCH_GO="${ARCH}"; ARCH_RUST="${ARCH}"; ARCH_GH="${ARCH}" ;;
+  amd64|x86_64)  ARCH_GO="amd64"; ARCH_RUST="x86_64"; ARCH_GH="x86_64"; ARCH_NVIM="x86_64" ;;
+  arm64|aarch64) ARCH_GO="arm64"; ARCH_RUST="aarch64"; ARCH_GH="arm64"; ARCH_NVIM="arm64" ;;
+  *) warn "Unsupported architecture: ${ARCH}"; ARCH_GO="${ARCH}"; ARCH_RUST="${ARCH}"; ARCH_GH="${ARCH}"; ARCH_NVIM="${ARCH}" ;;
 esac
 
 while [[ $# -gt 0 ]]; do
@@ -117,7 +117,7 @@ install_neovim() {
   local tmp
   tmp=$(mktemp -d)
   curl -fsSL -o "${tmp}/nvim.appimage" \
-    "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
+    "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH_NVIM}.appimage"
   chmod +x "${tmp}/nvim.appimage"
   mv "${tmp}/nvim.appimage" "${HOME}/.local/bin/nvim"
   rm -rf "${tmp}"
