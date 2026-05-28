@@ -145,29 +145,25 @@ require("lazy").setup({
 
       require("mason").setup()
       require("mason-tool-installer").setup({
-        ensure_installed = { "lua_ls", "stylua" },
+        ensure_installed = { "stylua" },
       })
-      require("mason-lspconfig").setup({
-        handlers = {
-          function(server_name)
-            require("lspconfig")[server_name].setup({ capabilities = capabilities })
-          end,
-          ["lua_ls"] = function()
-            require("lspconfig").lua_ls.setup({
-              capabilities = capabilities,
-              settings = {
-                Lua = {
-                  runtime = { version = "LuaJIT" },
-                  workspace = {
-                    checkThirdParty = false,
-                    library = { vim.env.VIMRUNTIME },
-                  },
-                  completion = { callSnippet = "Replace" },
-                },
-              },
-            })
-          end,
+
+      vim.lsp.config("lua_ls", {
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            workspace = {
+              checkThirdParty = false,
+              library = { vim.env.VIMRUNTIME },
+            },
+            completion = { callSnippet = "Replace" },
+          },
         },
+      })
+
+      require("mason-lspconfig").setup({
+        ensure_installed = { "lua_ls" },
       })
     end,
   },
