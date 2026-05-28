@@ -97,6 +97,7 @@ install_symlinks() {
 }
 
 # --- Neovim (AppImage) ------------------------------------------------------
+# Requires Neovim >= 0.11 (mason-lspconfig 2.x uses vim.lsp.enable / vim.lsp.config).
 
 install_neovim() {
   if command -v nvim &>/dev/null; then
@@ -105,14 +106,14 @@ install_neovim() {
     local major minor
     major="${ver%%.*}"
     minor="${ver#*.}"
-    if [[ "${major}" -gt 0 ]] || [[ "${minor}" -ge 9 ]]; then
-      info "Neovim already installed (v${ver})"
+    if [[ "${major}" -gt 0 ]] || [[ "${minor}" -ge 11 ]]; then
+      info "Neovim already installed (v${ver}, >= 0.11)"
       return
     fi
-    warn "Neovim too old (v${ver}), upgrading via AppImage..."
+    warn "Neovim too old (v${ver}, need >= 0.11), upgrading via AppImage..."
   fi
 
-  info "Installing Neovim AppImage..."
+  info "Installing Neovim AppImage (>= 0.11)..."
   local tmp
   tmp=$(mktemp -d)
   curl -fsSL -o "${tmp}/nvim.appimage" \
