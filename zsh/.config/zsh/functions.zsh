@@ -47,3 +47,15 @@ note() {
     $EDITOR "$notes_dir/$1.md"
   fi
 }
+
+# Reset terminal modes after ssh exits; an unclean disconnect leaves
+# mouse tracking enabled by remote tmux/nvim, spraying escape codes
+ssh() {
+  local ret
+  command ssh "$@"
+  ret=$?
+  if [[ -t 1 ]]; then
+    printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l\e[?1004l\e[?25h'
+  fi
+  return $ret
+}
