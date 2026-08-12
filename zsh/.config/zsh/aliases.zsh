@@ -61,3 +61,6 @@ alias weather="curl wttr.in"
 
 # Claude
 alias crun="claude --dangerously-skip-permissions"
+
+# OpenCode
+alias oc="opencode --auto"
