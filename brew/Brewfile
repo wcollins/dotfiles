@@ -29,6 +29,7 @@ brew "gcc"
 brew "gnu-sed"
 brew "shellcheck"
 brew "shfmt"
+brew "tree-sitter"
 
 # Git tools
 brew "git-quick-stats"

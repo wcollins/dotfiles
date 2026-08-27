@@ -266,6 +266,28 @@ install_shfmt() {
   info "shfmt installed to ~/.local/bin/shfmt"
 }
 
+# --- tree-sitter CLI ---------------------------------------------------------
+
+install_tree_sitter() {
+  if command -v tree-sitter &>/dev/null; then
+    info "tree-sitter already installed"
+    return
+  fi
+  info "Installing tree-sitter CLI..."
+  local arch_ts
+  case "${ARCH_GO}" in
+    amd64) arch_ts="x64" ;;
+    arm64) arch_ts="arm64" ;;
+    *) warn "Unsupported architecture for tree-sitter: ${ARCH_GO}"; return ;;
+  esac
+  local version
+  version=$(github_latest_version "tree-sitter/tree-sitter")
+  curl -fsSL "https://github.com/tree-sitter/tree-sitter/releases/download/v${version}/tree-sitter-linux-${arch_ts}.gz" \
+    | gunzip >"${HOME}/.local/bin/tree-sitter"
+  chmod +x "${HOME}/.local/bin/tree-sitter"
+  info "tree-sitter installed to ~/.local/bin/tree-sitter"
+}
+
 # --- tealdeer ----------------------------------------------------------------
 
 install_tealdeer() {
@@ -398,6 +420,7 @@ main() {
   install_lazygit
   install_git_quick_stats
   install_shfmt
+  install_tree_sitter
   install_tealdeer
   install_yq
   install_fastfetch
