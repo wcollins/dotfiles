@@ -205,16 +205,26 @@ require("lazy").setup({
     end,
   },
 
-  -- Treesitter
+  -- Treesitter (main branch: setup() no longer takes ensure_installed/highlight;
+  -- parsers install via install() and highlighting starts per-buffer)
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     build = ":TSUpdate",
-    opts = {
-      ensure_installed = { "bash", "lua", "markdown", "markdown_inline", "vim", "vimdoc", "json", "yaml", "toml", "javascript", "typescript", "python", "go", "rust" },
-      auto_install = true,
-      highlight = { enable = true },
-      indent = { enable = true },
-    },
+    lazy = false,
+    config = function()
+      local parsers = { "bash", "lua", "markdown", "markdown_inline", "vim", "vimdoc", "json", "yaml", "toml", "javascript", "typescript", "python", "go", "rust" }
+      require("nvim-treesitter").install(parsers)
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
+        callback = function(event)
+          -- pcall skips filetypes without an installed parser
+          if pcall(vim.treesitter.start, event.buf) then
+            vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
+    end,
   },
 
   -- Markdown preview (browser)
@@ -246,9 +256,6 @@ require("lazy").setup({
 
   -- Autopairs
   { "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
-
-  -- Comment toggling
-  { "numToStr/Comment.nvim", opts = {} },
 
   -- Surround
   { "kylechui/nvim-surround", event = "VeryLazy", opts = {} },
