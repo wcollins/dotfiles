@@ -17,6 +17,9 @@ fi
 # Shared environment variables
 source "$HOME/dotfiles/shared/environment.sh"
 
+# Shared helpers (also sourceable from Bash)
+source "$HOME/dotfiles/shared/functions.sh"
+
 # Zsh config modules
 . "$XDG_CONFIG_HOME/zsh/plugins.zsh"
 . "$XDG_CONFIG_HOME/zsh/aliases.zsh"
