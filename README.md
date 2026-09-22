@@ -80,6 +80,30 @@ Machine-specific config goes in these files (gitignored via `*.local`):
 
 ## Post-Install
 
+### Hugo LAN preview
+
+Run `hugo-lan` from a Hugo site directory. It prompts for this machine's LAN
+IPv4 address, then starts `hugo server -D` on that address at port 1313. Enter
+an address assigned to the hosting machine, not the device viewing the site.
+Open the printed URL from another device on your LAN. Drafts are included.
+Press Ctrl-C to stop; blank input or Ctrl-D cancels the prompt.
+
+Zsh loads the function automatically. To use it immediately in either Bash or
+Zsh, source the shared helpers:
+
+```bash
+source ~/dotfiles/shared/functions.sh
+cd ~/code/blog
+hugo-lan
+```
+
+To load it in every Bash session, add `source "$HOME/dotfiles/shared/functions.sh"`
+to your local `~/.bashrc`. No machine-specific IP is stored in the repository.
+
+Run the helper checks with `bash scripts/test-hugo-lan.sh`.
+
+### Initial configuration
+
 - Set your SSH signing key in `~/.gitconfig.local`
 - Create `~/.zshrc.local` for machine-specific shell config
 - Install tmux plugins: open tmux, press `C-a` then `I`
