@@ -33,6 +33,8 @@ custom-shader-animation = true
 font-family = JetBrainsMono Nerd Font Mono
 font-size = 14
 copy-on-select = true
+# OSC 52 writes from tmux, including a yank over SSH.
+clipboard-write = allow
 
 # Misc settings
 auto-update = check
