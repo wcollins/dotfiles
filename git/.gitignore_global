@@ -19,3 +19,6 @@
 # Tags
 tags
 TAGS
+
+# Claude Code working prompts (project-local, never committed)
+.prompts/
